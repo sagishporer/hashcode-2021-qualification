@@ -2,7 +2,7 @@
 
 Google Hash Code 2021 qualification round: Traffic Signalling. 
 
-## Algorithm description:
+## Algorithm description
 1. Load data.
 2. Remove unused streets.
 3. Build basic green light cycle for each intersection - 1 second duration for each incoming street.
@@ -12,8 +12,7 @@ Google Hash Code 2021 qualification round: Traffic Signalling.
 
 Some improvement is possible by small tweaks to the parameters of step (5). For simplicity & a single solution for all inputs there's only one variant in this source.
 
-## Scores
-Score: 10,513,445
+## Score
 
 * A – An example: 2,002
 * B – By the ocean: 4,568,819
@@ -21,3 +20,5 @@ Score: 10,513,445
 * D – Daily commute: 2,483,375
 * E – Etoile: 731,002
 * F – Forever jammed: 1,422,042
+
+Score: 10,513,445
