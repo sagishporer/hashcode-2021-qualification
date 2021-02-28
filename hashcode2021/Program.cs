@@ -90,7 +90,8 @@ namespace hashcode2021
                 if (intersectionResults.Count == 0)
                     break;
 
-                // Add cycle time for the top blocked cars
+                // Add cycle time for the top blocked cars.
+                // B - 64, C - 105, E - 152, F - 21
                 for (int i = 0; i < intersectionResults.Count / 50; i++)
                 {
                     SimulationResult.IntersectionResult intersectionResult = intersectionResults[i];
