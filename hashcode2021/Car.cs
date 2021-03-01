@@ -14,7 +14,11 @@ namespace hashcode2021
 
         public int TimeNeedToDrive()
         {
-            return this.Streets.Sum(o => o.Length);
+            int time = 0;
+            for (int i = 1; i < this.Streets.Count; i++)
+                time += this.Streets[i].Length;
+
+            return time;
         }
     }
 }
