@@ -24,6 +24,7 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | F – Forever jammed | 1,422,042 |  1,471,554 | 1,765,068 |
 | Total | 10,513,445 | 10,600,934 | N/A |
 
+Notes:
 * Score - The score of this code, with the current commited parameters.
 * Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,621,062.
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
