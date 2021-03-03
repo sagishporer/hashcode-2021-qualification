@@ -65,7 +65,12 @@ namespace hashcode2021
             // Optimization - if a car didn't finish the drive & it's the only car on a street - remove 
             // that street from the green lights & stop the car
             SimulationResult result = problem.RunSimulation(solution);
-            foreach (Car car in result.CarsNotFinished)
+            RemoveCycleStreetsUsedOnlyByCars(solution, result.CarsNotFinished);
+        }
+
+        private static void RemoveCycleStreetsUsedOnlyByCars(Solution solution, List<Car> cars)
+        {
+            foreach (Car car in cars)
                 for (int s = 0; s < car.Streets.Count - 1; s++)
                 {
                     Street street = car.Streets[s];
