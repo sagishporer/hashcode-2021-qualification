@@ -9,6 +9,7 @@ Google Hash Code 2021 qualification round: Traffic Signalling.
 4. Run a simulation - if there's a blocked car in the junction - try to swap the current green light with green light for the street of the blocked car.
 5. Run a simulation - count the number of car waiting in each junction per street. For the intersections with the top 2% of blocked cars - increase the cycle duration of the most blocked street by 1.
 6. While there was a recent improvement, go to 5.
+7. For all the cars that didn't complete the drive on time - scan the streets - if the this car is the only one passing in that street - remove the street from the intersection green lights.
 
 Some improvement is possible by small tweaks to the parameters of step (5). For simplicity & a single solution for all inputs there's only one variant in this source.
 
