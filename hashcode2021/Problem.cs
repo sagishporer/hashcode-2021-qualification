@@ -275,7 +275,7 @@ namespace hashcode2021
             }
 
             foreach (CarSimultionPosition car in carSimultionPositions)
-                simulationResult.CarsNotFinished.Add(car.Car.UniqueID);
+                simulationResult.CarsNotFinished.Add(car.Car);
 
             return simulationResult;
         }
@@ -383,7 +383,7 @@ namespace hashcode2021
 
             foreach (List<CarSimultionPosition> cars in carQueueByIntersection.Values)
                 foreach (CarSimultionPosition car in cars)
-                    simulationResult.CarsNotFinished.Add(car.Car.UniqueID);
+                    simulationResult.CarsNotFinished.Add(car.Car);
 
             return simulationResult;
         }
@@ -495,7 +495,7 @@ namespace hashcode2021
 
             foreach (List<CarSimultionPosition> cars in carQueueByStreet)
                 foreach (CarSimultionPosition car in cars)
-                    simulationResult.CarsNotFinished.Add(car.Car.UniqueID);
+                    simulationResult.CarsNotFinished.Add(car.Car);
 
             return simulationResult;
         }

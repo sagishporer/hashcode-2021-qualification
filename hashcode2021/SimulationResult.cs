@@ -8,7 +8,7 @@ namespace hashcode2021
     {
         public int Score;
         public List<IntersectionResult> IntersectionResults;
-        public HashSet<int> CarsNotFinished;
+        public List<Car> CarsNotFinished;
 
         public SimulationResult(int numberOfIntersections)
         {
@@ -17,7 +17,7 @@ namespace hashcode2021
             for (int i = 0; i < numberOfIntersections; i++)
                 this.IntersectionResults.Add(new IntersectionResult(i));
 
-            this.CarsNotFinished = new HashSet<int>();
+            this.CarsNotFinished = new List<Car>();
         }
 
         public int GetMaxBlockedTraffic()
