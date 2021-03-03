@@ -240,6 +240,9 @@ namespace hashcode2021
                     }
 
                     SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
+                    if (intersection.GreenLigths.Count == 0)
+                        continue;
+
                     // Not green light, skip to next car
                     if (!street.Name.Equals(intersection.GreenLigths[intersection.CurrentGreenLigth].Street.Name))
                     {
