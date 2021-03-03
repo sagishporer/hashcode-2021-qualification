@@ -50,7 +50,7 @@ namespace hashcode2021
         /// to make the cars pass intersections without waiting. 
         /// </summary>
         /// <returns></returns>
-        public int OptimizeGreenLightOrder(Solution solution)
+        public int OptimizeGreenLightOrder(Solution solution, HashSet<int> dontOptimizeCars)
         {
             int score = 0;
             int currentTime = 0;
@@ -110,6 +110,10 @@ namespace hashcode2021
                     {
                         // Green light already used - can't do it
                         if (intersection.GreenLigths[intersection.CurrentGreenLigth].GreenLightUsed)
+                            continue;
+
+                        // Skip optimizations on specific cars
+                        if (dontOptimizeCars.Contains(carSimultionPosition.Car.UniqueID))
                             continue;
 
                         // Optimization failed to improve
@@ -270,6 +274,9 @@ namespace hashcode2021
                 currentTime++;
             }
 
+            foreach (CarSimultionPosition car in carSimultionPositions)
+                simulationResult.CarsNotFinished.Add(car.Car.UniqueID);
+
             return simulationResult;
         }
 
@@ -373,6 +380,10 @@ namespace hashcode2021
 
                 currentTime++;
             }
+
+            foreach (List<CarSimultionPosition> cars in carQueueByIntersection.Values)
+                foreach (CarSimultionPosition car in cars)
+                    simulationResult.CarsNotFinished.Add(car.Car.UniqueID);
 
             return simulationResult;
         }
@@ -481,6 +492,10 @@ namespace hashcode2021
 
                 currentTime++;
             }
+
+            foreach (List<CarSimultionPosition> cars in carQueueByStreet)
+                foreach (CarSimultionPosition car in cars)
+                    simulationResult.CarsNotFinished.Add(car.Car.UniqueID);
 
             return simulationResult;
         }

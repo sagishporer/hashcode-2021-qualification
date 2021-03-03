@@ -45,10 +45,10 @@ namespace hashcode2021
             Solution solution = new Solution(problem.Intersections.Count);
 
             // Generate a dummy solution - each incoming street will get a green light for 1 cycle
-            InitBasicSolution(problem, solution);            
-            
+            InitBasicSolution(problem, solution);
+
             // Run simulation and try to change the order of green lights to minimize blocking
-            problem.OptimizeGreenLightOrder(solution);
+            problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
 
             solution = OptimizeCycleDuration(problem, solution);
 
