@@ -24,7 +24,7 @@ namespace hashcode2021
                 return;
             }
 
-            int index = list.BinarySearch(item);
+            int index = list.BinarySearch(item, comparer);
             if (index < 0)
                 index = ~index;
             list.Insert(index, item);
