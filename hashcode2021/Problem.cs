@@ -112,6 +112,11 @@ namespace hashcode2021
                         if (intersection.GreenLigths[intersection.CurrentGreenLigth].GreenLightUsed)
                             continue;
 
+                        // Optimization failed to improve
+                        //// Car can't finish on time - don't optmize it
+                        ////if (carSimultionPosition.TimeLeftOnDrive + currentTime > this.Duration)
+                        ////    continue;
+
                         // Find required green light
                         int requiredGreenLight = -1;
                         for (int g = 0; g < intersection.GreenLigths.Count; g++)
@@ -147,7 +152,9 @@ namespace hashcode2021
 
                     // Process car green light
                     carSimultionPosition.StreetNumber++;
-                    carSimultionPosition.TimeGotHere = currentTime + carSimultionPosition.Car.Streets[carSimultionPosition.StreetNumber].Length;
+                    Street newStreet = carSimultionPosition.GetCurrentStreet();
+                    carSimultionPosition.TimeGotHere = currentTime + newStreet.Length;
+                    carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
 
                     // Check if car finished
                     if (carSimultionPosition.StreetNumber == carSimultionPosition.Car.Streets.Count - 1)
@@ -241,7 +248,9 @@ namespace hashcode2021
 
                     // Process car green light
                     carSimultionPosition.StreetNumber++;
-                    carSimultionPosition.TimeGotHere = currentTime + carSimultionPosition.Car.Streets[carSimultionPosition.StreetNumber].Length;
+                    Street newStreet = carSimultionPosition.GetCurrentStreet();
+                    carSimultionPosition.TimeGotHere = currentTime + newStreet.Length;
+                    carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
 
                     // Check if car finished
                     if (carSimultionPosition.StreetNumber == carSimultionPosition.Car.Streets.Count - 1)
@@ -338,7 +347,9 @@ namespace hashcode2021
 
                         // Process car green light
                         carSimultionPosition.StreetNumber++;
-                        carSimultionPosition.TimeGotHere = currentTime + carSimultionPosition.GetCurrentStreet().Length;
+                        Street newStreet = carSimultionPosition.GetCurrentStreet();
+                        carSimultionPosition.TimeGotHere = currentTime + newStreet.Length;
+                        carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
 
                         // Check if car finished
                         carQueue.RemoveAt(i);
@@ -353,7 +364,7 @@ namespace hashcode2021
                         {
                             // Car not finished - add it to the next intersection
                             Utils.AddSorted(
-                                carQueueByIntersection[carSimultionPosition.GetCurrentStreet().EndIntersection],
+                                carQueueByIntersection[newStreet.EndIntersection],
                                 carSimultionPosition,
                                 carSimultionPositionByTimeGotHere);
                         }
@@ -438,19 +449,15 @@ namespace hashcode2021
                         }
 
                         SolutionIntersection solutionIntersection = solution.Intersections[street.EndIntersection];
-                        // Not green light, skip to next car
-                        //if (!street.Name.Equals(solutionIntersection.GetGreenLightStreet().Name))
-                        //{
-                        //    simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
-                        //    continue;
-                        //}
 
                         // Mark intersection as used for this cycle
                         carPassed = true;
 
                         // Process car green light
                         carSimultionPosition.StreetNumber++;
-                        carSimultionPosition.TimeGotHere = currentTime + carSimultionPosition.GetCurrentStreet().Length;
+                        Street newStreet = carSimultionPosition.GetCurrentStreet();
+                        carSimultionPosition.TimeGotHere = currentTime + newStreet.Length;
+                        carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
 
                         // Check if car finished
                         carQueue.RemoveAt(i);
@@ -464,7 +471,6 @@ namespace hashcode2021
                         else
                         {
                             // Car not finished - add it to the next intersection
-                            Street newStreet = carSimultionPosition.GetCurrentStreet();
                             Utils.AddSorted(
                                 carQueueByStreet[newStreet.UniqueID],
                                 carSimultionPosition,
@@ -493,12 +499,14 @@ namespace hashcode2021
             public Car Car;
             public int StreetNumber;
             public int TimeGotHere;
+            public int TimeLeftOnDrive;
 
             public CarSimultionPosition(Car car, int timeGotHere)
             {
                 this.Car = car;
                 this.StreetNumber = 0;
                 this.TimeGotHere = timeGotHere;
+                this.TimeLeftOnDrive = car.TimeNeedToDrive();
             }
 
             public Street GetCurrentStreet()
@@ -575,7 +583,7 @@ namespace hashcode2021
                     for (int carStreet = 0; carStreet < p; carStreet++)
                         carStreets.Add(streets[parts[1 + carStreet]]);
 
-                    cars.Add(new Car(carStreets));
+                    cars.Add(new Car(car, carStreets));
                 }
 
                 return new Problem(d, i, f, streets, cars);

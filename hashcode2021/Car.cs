@@ -5,10 +5,13 @@ namespace hashcode2021
 {
     class Car
     {
+        public int UniqueID { get; private set; }
+
         public List<Street> Streets { get; private set; }
 
-        public Car(List<Street> streets)
+        public Car(int uniqueId, List<Street> streets)
         {
+            this.UniqueID = uniqueId;
             this.Streets = streets;
         }
 
