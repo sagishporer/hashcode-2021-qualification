@@ -14,11 +14,17 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 
 ## Score
 
-* A – An example: 2,002
-* B – By the ocean: 4,568,819
-* C – Checkmate: 1,306,205
-* D – Daily commute: 2,483,375
-* E – Etoile: 731,002
-* F – Forever jammed: 1,422,042
+| Input | Score | Max Known Score | Upper Bound |
+| --- | --- | --- | --- |
+| A – An example | 2,002 | 2,002 | 2,002 |
+| B – By the ocean | 4,568,819 | 4,569,036 | 4,576,202 |
+| C – Checkmate | 1,306,205 | 1,310,645 | 1,328,389 |
+| D – Daily commute | 2,487,443 | 2,498,918 | 3,986,591 |
+| E – Etoile | 731,002 | 748,779 | 921,203 |
+| F – Forever jammed | 1,422,042 |  1,471,554 | 1,765,068 |
+| Total | 10,513,445 | 10,600,934 | N/A |
 
-Score: 10,513,445
+Notes:
+* Score - The score of this code, with the current commited parameters.
+* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,621,062.
+* Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
