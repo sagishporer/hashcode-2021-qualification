@@ -18,11 +18,11 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | --- | --- | --- | --- |
 | A – An example | 2,002 | 2,002 | 2,002 |
 | B – By the ocean | 4,568,819 | 4,569,036 | 4,576,202 |
-| C – Checkmate | 1,306,205 | 1,310,645 | 1,328,389 |
-| D – Daily commute | 2,487,443 | 2,498,918 | 3,986,591 |
-| E – Etoile | 731,002 | 748,779 | 921,203 |
-| F – Forever jammed | 1,422,042 |  1,471,554 | 1,765,068 |
-| Total | 10,513,445 | 10,600,934 | N/A |
+| C – Checkmate | 1,306,213 | 1,310,645 | 1,328,389 |
+| D – Daily commute | 2,483,375 | 2,498,918 | 3,986,591 |
+| E – Etoile | 731,724 | 748,779 | 921,203 |
+| F – Forever jammed | 1,440,917 |  1,471,554 | 1,765,068 |
+| Total | 10,533,050 | 10,600,934 | N/A |
 
 Notes:
 * Score - The score of this code, with the current commited parameters.
