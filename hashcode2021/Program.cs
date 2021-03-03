@@ -50,30 +50,42 @@ namespace hashcode2021
             // Run simulation and try to change the order of green lights to minimize blocking
             problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
 
+            solution = OptimizeCycleDuration(problem, solution);
+
             // Remove streets where the only car that passes is a car that didn't finish from
             // the green light cycle
-            //OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
+            solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
-            solution = OptimizeCycleDuration(problem, solution);
+            // Simulate solution
+            SimulationResult simulationResult = problem.RunSimulation(solution);
+            Console.WriteLine("Score: {0}", simulationResult.Score);
 
             // Generate output
             GenerateOutput(solution, fileName);
         }
 
-        private static void OptimizeCycleClearStreetsCarsDidntFinish(Problem problem, Solution solution)
+        private static Solution OptimizeCycleClearStreetsCarsDidntFinish(Problem problem, Solution solution)
         {
+            Solution newSolution = (Solution)solution.Clone();
+
             // Optimization - if a car didn't finish the drive & it's the only car on a street - remove 
             // that street from the green lights & stop the car
             SimulationResult result = problem.RunSimulation(solution);
-            RemoveCycleStreetsUsedOnlyByCars(solution, result.CarsNotFinished);
+            RemoveCycleStreetsUsedOnlyByCars(newSolution, result.CarsNotFinished);
+            SimulationResult newResult = problem.RunSimulation(newSolution);
+
+            if (newResult.Score > result.Score)
+                return newSolution;
+            else
+                return solution;
         }
 
-        private static void RemoveCycleStreetsUsedOnlyByCars(Solution solution, List<Car> cars)
+        private static void RemoveCycleStreetsUsedOnlyByCars(Solution solution, List<CarSimultionPosition> cars)
         {
-            foreach (Car car in cars)
-                for (int s = 0; s < car.Streets.Count - 1; s++)
+            foreach (CarSimultionPosition car in cars)
+                for (int s = 0; s < car.Car.Streets.Count - 1; s++)
                 {
-                    Street street = car.Streets[s];
+                    Street street = car.Car.Streets[s];
                     if (street.IncomingUsageCount == 1)
                     {
                         SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
@@ -107,7 +119,7 @@ namespace hashcode2021
                     bestSolutionScore = simulationResult.Score;
                     timesSinceOptimized = 0;
                 }
-                Console.WriteLine("Score: {0}, Max Blocked Traffic: {1}, Best score: {2}", simulationResult.Score, simulationResult.GetMaxBlockedTraffic(), bestSolutionScore);
+                Console.WriteLine("Score: {0}, Max Blocked Traffic: {1}, Cars not finished: {2}, Best score: {3}", simulationResult.Score, simulationResult.GetMaxBlockedTraffic(), simulationResult.CarsNotFinished.Count, bestSolutionScore);
 
                 List<SimulationResult.IntersectionResult> intersectionResults = simulationResult.IntersectionResults.OrderByDescending(o => o.MaxStreetBlockedTraffic).ToList();
                 // Remove intersection without blocked cars
