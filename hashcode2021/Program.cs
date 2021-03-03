@@ -50,10 +50,39 @@ namespace hashcode2021
             // Run simulation and try to change the order of green lights to minimize blocking
             problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
 
+            // Remove streets where the only car that passes is a car that didn't finish from
+            // the green light cycle
+            //OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
+
             solution = OptimizeCycleDuration(problem, solution);
 
             // Generate output
             GenerateOutput(solution, fileName);
+        }
+
+        private static void OptimizeCycleClearStreetsCarsDidntFinish(Problem problem, Solution solution)
+        {
+            // Optimization - if a car didn't finish the drive & it's the only car on a street - remove 
+            // that street from the green lights & stop the car
+            SimulationResult result = problem.RunSimulation(solution);
+            foreach (Car car in result.CarsNotFinished)
+                for (int s = 0; s < car.Streets.Count - 1; s++)
+                {
+                    Street street = car.Streets[s];
+                    if (street.IncomingUsageCount == 1)
+                    {
+                        SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
+                        for (int g = 0; g < intersection.GreenLigths.Count; g++)
+                        {
+                            GreenLightCycle greenLightCycle = intersection.GreenLigths[g];
+                            if (greenLightCycle.Street.UniqueID == street.UniqueID)
+                            {
+                                intersection.GreenLigths.RemoveAt(g);
+                                g--;
+                            }
+                        }
+                    }
+                }
         }
 
         private static Solution OptimizeCycleDuration(Problem problem, Solution solution)
