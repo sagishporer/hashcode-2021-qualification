@@ -26,6 +26,11 @@ namespace hashcode2021
             return GreenLigths.Sum(o => (o.Duration > 0) ? 1 : 0);
         }
 
+        public Street GetGreenLightStreet()
+        {
+            return this.GreenLigths[this.CurrentGreenLigth].Street;
+        }
+
         public bool HasGreenLights()
         {
             return CountGreenLights() > 0;
