@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
@@ -365,6 +366,120 @@ namespace hashcode2021
             return simulationResult;
         }
 
+        /// <summary>
+        /// Run simulation where there's a car queue for each street
+        /// </summary>
+        /// <param name="solution"></param>
+        /// <returns></returns>
+        public SimulationResult RunSimulation3(Solution solution)
+        {
+            CarSimultionPositionByTimeGotHere carSimultionPositionByTimeGotHere = new CarSimultionPositionByTimeGotHere();
+            SimulationResult simulationResult = new SimulationResult(this.Intersections.Count);
+            int currentTime = 0;
+
+            int maxStreetNumber = 0;
+            foreach (Street street in this.Streets.Values)
+                maxStreetNumber = Math.Max(maxStreetNumber, street.UniqueID);
+
+            List<CarSimultionPosition>[] carQueueByStreet = new List<CarSimultionPosition>[maxStreetNumber + 1];
+            for (int i = 0; i < carQueueByStreet.Length; i++)
+                carQueueByStreet[i] = new List<CarSimultionPosition>();
+
+            // Add cars to queues in each intersection and street
+            int simulationCarStart = -(this.Cars.Count + 1);
+            foreach (Car car in this.Cars)
+            {
+                Street carStreet = car.Streets[0];
+                carQueueByStreet[carStreet.UniqueID].Add(new CarSimultionPosition(car, simulationCarStart));
+                simulationCarStart++;
+            }
+
+            // Init green lights
+            foreach (SolutionIntersection intersection in solution.Intersections)
+            {
+                intersection.CurrentGreenLigth = 0;
+                if (intersection.GreenLigths.Count > 0)
+                    intersection.CurrentGreenLightChangeTime = intersection.GreenLigths[0].Duration;
+                else
+                    intersection.CurrentGreenLightChangeTime = int.MaxValue;
+            }
+
+            while (currentTime <= this.Duration)
+            {
+                // Update traffic lights cycle
+                foreach (SolutionIntersection intersection in solution.Intersections)
+                {
+                    // It's a 
+                    if (intersection.GreenLigths.Count == 0)
+                        continue;
+
+                    // Update intersection green light
+                    if (intersection.CurrentGreenLightChangeTime <= currentTime)
+                    {
+                        intersection.CurrentGreenLigth = (intersection.CurrentGreenLigth + 1) % intersection.GreenLigths.Count;
+                        intersection.CurrentGreenLightChangeTime = currentTime + intersection.GreenLigths[intersection.CurrentGreenLigth].Duration;
+                    }
+
+                    // Update intersection car
+                    List<CarSimultionPosition> carQueue = carQueueByStreet[intersection.GetGreenLightStreet().UniqueID];
+                    bool carPassed = false;
+                    for (int i = 0; i < carQueue.Count; i++)
+                    {
+                        CarSimultionPosition carSimultionPosition = carQueue[i];
+                        if (carSimultionPosition.TimeGotHere > currentTime)
+                            break;
+
+                        Street street = carSimultionPosition.GetCurrentStreet();
+                        // Keep waiting, although there's green light on this street
+                        if (carPassed)
+                        {
+                            simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
+                            continue;
+                        }
+
+                        SolutionIntersection solutionIntersection = solution.Intersections[street.EndIntersection];
+                        // Not green light, skip to next car
+                        //if (!street.Name.Equals(solutionIntersection.GetGreenLightStreet().Name))
+                        //{
+                        //    simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
+                        //    continue;
+                        //}
+
+                        // Mark intersection as used for this cycle
+                        carPassed = true;
+
+                        // Process car green light
+                        carSimultionPosition.StreetNumber++;
+                        carSimultionPosition.TimeGotHere = currentTime + carSimultionPosition.GetCurrentStreet().Length;
+
+                        // Check if car finished
+                        carQueue.RemoveAt(i);
+                        i--;
+                        if (carSimultionPosition.StreetNumber == carSimultionPosition.Car.Streets.Count - 1)
+                        {
+                            // Check if finished on time - if so give bonus
+                            if (carSimultionPosition.TimeGotHere <= this.Duration)
+                                simulationResult.Score += this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
+                        }
+                        else
+                        {
+                            // Car not finished - add it to the next intersection
+                            Street newStreet = carSimultionPosition.GetCurrentStreet();
+                            Utils.AddSorted(
+                                carQueueByStreet[newStreet.UniqueID],
+                                carSimultionPosition,
+                                carSimultionPositionByTimeGotHere);
+                        }
+                    }
+                }
+
+                currentTime++;
+            }
+
+            return simulationResult;
+        }
+
+
         private class CarSimultionPositionByTimeGotHere : IComparer<CarSimultionPosition>
         {
             public int Compare([AllowNull] CarSimultionPosition x, [AllowNull] CarSimultionPosition y)
@@ -448,7 +563,7 @@ namespace hashcode2021
                 {
                     line = sr.ReadLine();
                     parts = line.Split(' ');
-                    streets.Add(parts[2], new Street(int.Parse(parts[0]), int.Parse(parts[1]), parts[2], int.Parse(parts[3])));
+                    streets.Add(parts[2], new Street(street, int.Parse(parts[0]), int.Parse(parts[1]), parts[2], int.Parse(parts[3])));
                 }
 
                 for (int car = 0; car < v; car++)
