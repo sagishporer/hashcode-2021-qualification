@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace hashcode2021
@@ -277,8 +276,7 @@ namespace hashcode2021
                 currentTime++;
             }
 
-            foreach (CarSimultionPosition car in carSimultionPositions)
-                simulationResult.CarsNotFinished.Add(car.Car);
+            simulationResult.CarsNotFinished.AddRange(carSimultionPositions);
 
             return simulationResult;
         }
@@ -385,8 +383,7 @@ namespace hashcode2021
             }
 
             foreach (List<CarSimultionPosition> cars in carQueueByIntersection.Values)
-                foreach (CarSimultionPosition car in cars)
-                    simulationResult.CarsNotFinished.Add(car.Car);
+                simulationResult.CarsNotFinished.AddRange(cars);
 
             return simulationResult;
         }
@@ -497,40 +494,9 @@ namespace hashcode2021
             }
 
             foreach (List<CarSimultionPosition> cars in carQueueByStreet)
-                foreach (CarSimultionPosition car in cars)
-                    simulationResult.CarsNotFinished.Add(car.Car);
+                simulationResult.CarsNotFinished.AddRange(cars);
 
             return simulationResult;
-        }
-
-
-        private class CarSimultionPositionByTimeGotHere : IComparer<CarSimultionPosition>
-        {
-            public int Compare([AllowNull] CarSimultionPosition x, [AllowNull] CarSimultionPosition y)
-            {
-                return x.TimeGotHere.CompareTo(y.TimeGotHere);
-            }
-        }
-
-        private class CarSimultionPosition
-        {
-            public Car Car;
-            public int StreetNumber;
-            public int TimeGotHere;
-            public int TimeLeftOnDrive;
-
-            public CarSimultionPosition(Car car, int timeGotHere)
-            {
-                this.Car = car;
-                this.StreetNumber = 0;
-                this.TimeGotHere = timeGotHere;
-                this.TimeLeftOnDrive = car.TimeNeedToDrive();
-            }
-
-            public Street GetCurrentStreet()
-            {
-                return this.Car.Streets[this.StreetNumber];
-            }
         }
 
         public int CalculateScoreUpperBound()

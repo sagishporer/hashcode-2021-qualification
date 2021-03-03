@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static hashcode2021.Problem;
 
 namespace hashcode2021
 {
@@ -8,7 +9,7 @@ namespace hashcode2021
     {
         public int Score;
         public List<IntersectionResult> IntersectionResults;
-        public List<Car> CarsNotFinished;
+        public List<CarSimultionPosition> CarsNotFinished;
 
         public SimulationResult(int numberOfIntersections)
         {
@@ -17,7 +18,7 @@ namespace hashcode2021
             for (int i = 0; i < numberOfIntersections; i++)
                 this.IntersectionResults.Add(new IntersectionResult(i));
 
-            this.CarsNotFinished = new List<Car>();
+            this.CarsNotFinished = new List<CarSimultionPosition>();
         }
 
         public int GetMaxBlockedTraffic()
