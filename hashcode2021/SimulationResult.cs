@@ -32,6 +32,7 @@ namespace hashcode2021
             public Dictionary<string, int> BlockedTrafficPerStreet;
             public String MaxStreetName;
             public int MaxStreetBlockedTraffic;
+            public int TotalBlockedTraffic;
 
             public IntersectionResult(int id)
             {
@@ -39,10 +40,13 @@ namespace hashcode2021
                 this.BlockedTrafficPerStreet = new Dictionary<string, int>();
                 this.BlockedTrafficPerStreet.Add("", 0);
                 this.MaxStreetBlockedTraffic = 0;
+                this.TotalBlockedTraffic = 0;
             }
 
             public void AddBlockedTraffic(string streetName)
             {
+                this.TotalBlockedTraffic++;
+
                 int value;
                 if (!BlockedTrafficPerStreet.TryGetValue(streetName, out value))
                     value = 1;
