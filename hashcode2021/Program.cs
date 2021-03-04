@@ -50,6 +50,8 @@ namespace hashcode2021
             // Run simulation and try to change the order of green lights to minimize blocking
             problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
 
+            // This works better for (E)
+            //solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
             solution = OptimizeCycleDuration(problem, solution);
 
             // Remove streets where the only car that passes is a car that didn't finish from
@@ -182,6 +184,33 @@ namespace hashcode2021
                 }
         }
 
+        private static Solution OptimizeCycleDurationByNumberOfIncomingCars(Problem problem, Solution solution)
+        {
+            SimulationResult result = problem.RunSimulation(solution);
+            Solution bestSolution = solution;
+            int bestScore = result.Score;
+
+            for (int d = 1; d < 50; d++)
+            {
+                Solution newSolution = (Solution)solution.Clone();
+
+                foreach (SolutionIntersection intersection in newSolution.Intersections)
+                {
+                    foreach (GreenLightCycle cycle in intersection.GreenLigths)
+                        cycle.Duration = Math.Max(1, cycle.Street.IncomingUsageCount / d);
+                }
+
+                result = problem.RunSimulation(newSolution);
+                if (result.Score > bestScore)
+                {
+                    bestSolution = newSolution;
+                    bestScore = result.Score;
+                }
+            }
+
+            return bestSolution;
+        }
+
         private static Solution OptimizeCycleDuration(Problem problem, Solution solution, int addCycleDevider = 50)
         {
             Solution bestSolution = null;
@@ -218,6 +247,8 @@ namespace hashcode2021
 
                 // Add cycle time for the top blocked cars.
                 // B - 64, C - 105, E - 152, F - 15
+                // F - 16 With OptimizeGreenLightOrder3 is a bit higher
+                // D - use OptimizeGreenLightOrder3
                 for (int i = 0; i < intersectionResults.Count / addCycleDevider; i++)
                 {
                     SimulationResult.IntersectionResult intersectionResult = intersectionResults[i];
