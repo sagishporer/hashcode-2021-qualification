@@ -24,7 +24,7 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | D – Daily commute | 2,483,375 | 2,552,820 | 3,986,591 |
 | E – Etoile | 731,726 | 767,827 | 921,203 |
 | F – Forever jammed | 1,460,486 |  1,472,822 | 1,765,068 |
-| Total | 10,552,621 | 10,600,934 | N/A |
+| Total | 10,552,621 | 10,680,979 | N/A |
 
 Notes:
 * Score - The score of this code, with the current commited parameters.
