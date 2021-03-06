@@ -63,6 +63,8 @@ namespace hashcode2021
             // the green light cycle
             solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
+            //solution = OptimizeGreenLightOrderBruteForce(problem, solution);
+
             // Simulate solution
             SimulationResult simulationResult = problem.RunSimulation(solution);
             Console.WriteLine("Score: {0}", simulationResult.Score);
@@ -98,6 +100,30 @@ namespace hashcode2021
                     bestScore = simulationResult.Score;
                 }
             }
+        }
+
+        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution)
+        {
+            SimulationResult simulationResult = problem.RunSimulation(solution);
+            int bestScore = simulationResult.Score;
+
+            for (int i = 0; i < solution.Intersections.Length; i++)
+            {
+                if (solution.Intersections[i].GreenLigths.Count < 3)
+                    continue;
+
+                Solution newSolution = (Solution)solution.Clone();
+                Utils.SwapItems(newSolution.Intersections[i].GreenLigths, 0, 1);
+                simulationResult = problem.RunSimulation(newSolution);
+                if (simulationResult.Score > bestScore)
+                {
+                    solution = newSolution;
+                    bestScore = simulationResult.Score;
+                    Console.WriteLine("New high score: {0}, Intersection: {1}", bestScore, i);
+                }
+            }
+
+            return solution;
         }
 
         private static Solution OptimizeCycleClearStreetsCarsDidntFinish(Problem problem, Solution solution)
