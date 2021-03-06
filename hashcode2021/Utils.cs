@@ -30,6 +30,13 @@ namespace hashcode2021
             list.Insert(index, item);
         }
 
+        public static void SwapItems<T>(List<T> list, int item1, int item2)
+        {
+            T tmp = list[item1];
+            list[item1] = list[item2];
+            list[item2] = tmp;
+        }
+
         public static void SwapItems<T>(List<T> list1, int item1, List<T> list2, int item2)
         {
             T tmp = list1[item1];
