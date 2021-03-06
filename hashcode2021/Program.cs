@@ -48,11 +48,16 @@ namespace hashcode2021
             InitBasicSolution(problem, solution);
 
             // Run simulation and try to change the order of green lights to minimize blocking
+            // D - use OptimizeGreenLightOrder4
             problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
 
-            // This works better for (E)
+            // E - This works better
             //solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
-            solution = OptimizeCycleDuration(problem, solution);
+
+            // Add cycle time for the top blocked cars.
+            // B - 64, C - 105
+            // F - 16 With OptimizeGreenLightOrder3 is a bit higher
+            solution = OptimizeCycleDuration(problem, solution, 50);
 
             // Remove streets where the only car that passes is a car that didn't finish from
             // the green light cycle
@@ -211,7 +216,7 @@ namespace hashcode2021
             return bestSolution;
         }
 
-        private static Solution OptimizeCycleDuration(Problem problem, Solution solution, int addCycleDevider = 50)
+        private static Solution OptimizeCycleDuration(Problem problem, Solution solution, int addCycleDevider)
         {
             Solution bestSolution = null;
             int bestSolutionScore = -1;
@@ -245,10 +250,6 @@ namespace hashcode2021
                 if (intersectionResults.Count == 0)
                     break;
 
-                // Add cycle time for the top blocked cars.
-                // B - 64, C - 105, E - 152, F - 15
-                // F - 16 With OptimizeGreenLightOrder3 is a bit higher
-                // D - use OptimizeGreenLightOrder3
                 for (int i = 0; i < intersectionResults.Count / addCycleDevider; i++)
                 {
                     SimulationResult.IntersectionResult intersectionResult = intersectionResults[i];
