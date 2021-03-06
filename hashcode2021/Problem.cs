@@ -745,6 +745,7 @@ namespace hashcode2021
                     // Update intersection car
                     List<CarSimultionPosition> carQueue = carQueueByStreet[intersection.GetGreenLightStreet().UniqueID];
                     bool carPassed = false;
+                    int waitOnGreenLight = 0;
                     for (int i = 0; i < carQueue.Count; i++)
                     {
                         CarSimultionPosition carSimultionPosition = carQueue[i];
@@ -755,6 +756,7 @@ namespace hashcode2021
                         // Keep waiting, although there's green light on this street
                         if (carPassed)
                         {
+                            waitOnGreenLight++;
                             simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
                             continue;
                         }
@@ -788,6 +790,8 @@ namespace hashcode2021
                                 carSimultionPositionByTimeGotHere);
                         }
                     }
+                    simulationResult.IntersectionResults[intersection.GetGreenLightStreet().EndIntersection]
+                        .UpdateMaxWaitOnGreenLight(intersection.GetGreenLightStreet().UniqueID, waitOnGreenLight);
                 }
 
                 currentTime++;

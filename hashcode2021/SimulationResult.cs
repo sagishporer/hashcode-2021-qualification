@@ -34,6 +34,10 @@ namespace hashcode2021
             public int MaxStreetBlockedTraffic;
             public int TotalBlockedTraffic;
 
+            public Dictionary<int, int> MaxWaitOnGreenLightByStreet;
+            public int MaxWaitOnGreenLight;
+            public int MaxWaitOnGreenLightStreetID;
+
             public IntersectionResult(int id)
             {
                 this.ID = id;
@@ -41,6 +45,24 @@ namespace hashcode2021
                 this.BlockedTrafficPerStreet.Add("", 0);
                 this.MaxStreetBlockedTraffic = 0;
                 this.TotalBlockedTraffic = 0;
+
+                this.MaxWaitOnGreenLight = 0;
+                this.MaxWaitOnGreenLightByStreet = new Dictionary<int, int>();
+            }
+
+            public void UpdateMaxWaitOnGreenLight(int streetId, int waitOnGreenLight)
+            {
+                if (this.MaxWaitOnGreenLight < waitOnGreenLight)
+                {
+                    this.MaxWaitOnGreenLight = waitOnGreenLight;
+                    this.MaxWaitOnGreenLightStreetID = streetId;
+                }
+
+                int maxWait;
+                if (MaxWaitOnGreenLightByStreet.TryGetValue(streetId, out maxWait))
+                    MaxWaitOnGreenLightByStreet[streetId] = Math.Max(maxWait, waitOnGreenLight);
+                else
+                    MaxWaitOnGreenLightByStreet.Add(streetId, waitOnGreenLight);
             }
 
             public void AddBlockedTraffic(string streetName)
