@@ -48,11 +48,11 @@ namespace hashcode2021
             InitBasicSolution(problem, solution);
 
             // Run simulation and try to change the order of green lights to minimize blocking
-            problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
+            problem.OptimizeGreenLightOrder3(solution, new HashSet<int>());
 
             // This works better for (E)
             //solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
-            solution = OptimizeCycleDuration(problem, solution);
+            solution = OptimizeCycleDuration(problem, solution, 16);
 
             // Remove streets where the only car that passes is a car that didn't finish from
             // the green light cycle
