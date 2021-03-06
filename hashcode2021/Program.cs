@@ -51,8 +51,8 @@ namespace hashcode2021
             problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
 
             // This works better for (E)
-            //solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
-            solution = OptimizeCycleDuration(problem, solution);
+            solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
+            //solution = OptimizeCycleDuration(problem, solution);
 
             // Remove streets where the only car that passes is a car that didn't finish from
             // the green light cycle
