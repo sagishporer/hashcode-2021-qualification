@@ -28,5 +28,5 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 
 Notes:
 * Score - The score of this code, with the current commited parameters.
-* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,621,062.
+* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was  10,680,979.
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
