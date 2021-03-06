@@ -262,6 +262,75 @@ namespace hashcode2021
             return bestSolution;
         }
 
+        private static Solution OptimizeCycleDuration2(Problem problem, Solution solution)
+        {
+            Dictionary<int, int> lastSimulationWaitingCarsByStreet = new Dictionary<int, int>();
+            foreach (Street street in problem.Streets.Values)
+                lastSimulationWaitingCarsByStreet.Add(street.UniqueID, -1);
+
+            Solution bestSolution = null;
+            int bestSolutionScore = -1;
+            while (true)
+            {
+                SimulationResult simulationResult = problem.RunSimulation3(solution);
+
+                if (simulationResult.Score > bestSolutionScore)
+                {
+                    bestSolution = (Solution)solution.Clone();
+                    bestSolutionScore = simulationResult.Score;
+                }
+                else
+                    // Stop if no improvement found
+                    break;
+
+                Console.WriteLine("Score: {0}, Max Blocked Traffic: {1}, Cars not finished: {2}, Best score: {3}", simulationResult.Score, simulationResult.GetMaxBlockedTraffic(), simulationResult.CarsNotFinished.Count, bestSolutionScore);
+
+                List<SimulationResult.IntersectionResult> intersectionResults = simulationResult.IntersectionResults.OrderByDescending(o => o.MaxWaitOnGreenLight).ToList();
+                // Remove intersection without blocked cars
+                for (int i = 0; i < intersectionResults.Count; i++)
+                {
+                    if (intersectionResults[i].MaxWaitOnGreenLight == 0)
+                    {
+                        intersectionResults.RemoveAt(i);
+                        i--;
+                    }
+                }
+
+                // Nothing to optimize - break
+                if (intersectionResults.Count == 0)
+                    break;
+
+                // Add cycle time for the top blocked cars.
+                int lastBestScore = simulationResult.Score;
+                for (int i = 0; i < intersectionResults.Count; i++)
+                {
+                    SimulationResult.IntersectionResult intersectionResult = intersectionResults[i];
+                    SolutionIntersection intersection = solution.Intersections[intersectionResult.ID];
+                    foreach (GreenLightCycle greenLightCycle in intersection.GreenLigths)
+                        if (greenLightCycle.Street.UniqueID.Equals(intersectionResult.MaxWaitOnGreenLightStreetID))
+                        {
+                            // Don't repeat
+                            if (lastSimulationWaitingCarsByStreet[greenLightCycle.Street.UniqueID] == intersectionResult.MaxWaitOnGreenLight)
+                                break;
+
+                            greenLightCycle.Duration++;
+                            SimulationResult newResult = problem.RunSimulation3(solution);
+                            if (newResult.Score <= lastBestScore)
+                            {
+                                greenLightCycle.Duration--;
+                                lastSimulationWaitingCarsByStreet[greenLightCycle.Street.UniqueID] = intersectionResult.MaxWaitOnGreenLight;
+                            }
+                            else
+                                lastSimulationWaitingCarsByStreet[greenLightCycle.Street.UniqueID] = -1;
+
+                            break;
+                        }
+                }
+            }
+
+            return bestSolution;
+        }
+
         private static void InitBasicSolution(Problem problem, Solution solution)
         {
             foreach (Intersection i in problem.Intersections)
