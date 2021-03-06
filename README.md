@@ -19,14 +19,14 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | Input | Score | Max Known Score | Upper Bound |
 | --- | --- | --- | --- |
 | A – An example | 2,002 | 2,002 | 2,002 |
-| B – By the ocean | 4,568,819 | 4,569,036 | 4,576,202 |
-| C – Checkmate | 1,306,213 | 1,310,645 | 1,328,389 |
-| D – Daily commute | 2,483,375 | 2,498,918 | 3,986,591 |
-| E – Etoile | 731,726 | 748,779 | 921,203 |
-| F – Forever jammed | 1,460,486 |  1,471,554 | 1,765,068 |
-| Total | 10,552,621 | 10,600,934 | N/A |
+| B – By the ocean | 4,568,819 | 4,570,431 | 4,576,202 |
+| C – Checkmate | 1,306,213 | 1,315,077 | 1,328,389 |
+| D – Daily commute | 2,483,375 | 2,552,820 | 3,986,591 |
+| E – Etoile | 731,726 | 767,827 | 921,203 |
+| F – Forever jammed | 1,460,486 |  1,472,822 | 1,765,068 |
+| Total | 10,552,621 | 10,680,979 | N/A |
 
 Notes:
 * Score - The score of this code, with the current commited parameters.
-* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,621,062.
+* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,680,979 (team UVIGO Bruteforcers).
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
