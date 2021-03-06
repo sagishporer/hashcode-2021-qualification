@@ -52,7 +52,7 @@ namespace hashcode2021
 
             // This works better for (E)
             //solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
-            solution = OptimizeCycleDuration(problem, solution);
+            solution = OptimizeCycleDuration(problem, solution, 64);
 
             // Remove streets where the only car that passes is a car that didn't finish from
             // the green light cycle
