@@ -646,6 +646,8 @@ namespace hashcode2021
         /// <returns></returns>
         public SimulationResult RunSimulation(Solution solution)
         {
+            CarSimultionPositionByTimeGotHere timeGotHereCompare = new CarSimultionPositionByTimeGotHere();
+
             SimulationResult simulationResult = new SimulationResult(this.Intersections.Count);
             int currentTime = 0;
 
@@ -704,19 +706,23 @@ namespace hashcode2021
                     carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
 
                     // Check if car finished
+                    carSimultionPositions.RemoveAt(i);
+                    i--;
+
                     if (carSimultionPosition.StreetNumber == carSimultionPosition.Car.Streets.Count - 1)
                     {
                         // Check if finished on time - if so give bonus
                         if (carSimultionPosition.TimeGotHere <= this.Duration)
                             simulationResult.Score += this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
-
-                        carSimultionPositions.RemoveAt(i);
-                        i--;
+                    }
+                    else
+                    {
+                        Utils.AddSorted(carSimultionPositions, carSimultionPosition, timeGotHereCompare);
                     }
                 }
 
                 // Sort cars by time
-                carSimultionPositions.Sort((x, y) => x.TimeGotHere.CompareTo(y.TimeGotHere));
+                //carSimultionPositions.Sort((x, y) => x.TimeGotHere.CompareTo(y.TimeGotHere));
 
                 currentTime++;
             }
