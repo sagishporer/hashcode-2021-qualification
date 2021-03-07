@@ -158,7 +158,7 @@ namespace hashcode2021
                     {
                         solution = newSolution;
                         bestScore = newScore;
-                        Console.WriteLine("New high score: {0}, Intersection: {1}, Delte: {2}", bestScore, i, delta);
+                        Console.WriteLine("New high score: {0}, Intersection: {1}, Delta: {2}", bestScore, i, delta);
                         if (fileName != null)
                             GenerateOutput(solution, fileName);
                     }
