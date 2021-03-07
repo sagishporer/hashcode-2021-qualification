@@ -660,26 +660,10 @@ namespace hashcode2021
 
             // Init green lights
             foreach (SolutionIntersection intersection in solution.Intersections)
-            {
-                intersection.CurrentGreenLigth = 0;
-                if (intersection.GreenLigths.Count > 0)
-                    intersection.CurrentGreenLightChangeTime = intersection.GreenLigths[0].Duration;
-                else
-                    intersection.CurrentGreenLightChangeTime = int.MaxValue;
-            }
+                intersection.BuildGreenLightsArray();
 
             while (currentTime <= this.Duration)
             {
-                // Update traffic lights cycle
-                foreach (SolutionIntersection intersection in solution.Intersections)
-                { 
-                    if (intersection.CurrentGreenLightChangeTime <= currentTime)
-                    {
-                        intersection.CurrentGreenLigth = (intersection.CurrentGreenLigth + 1) % intersection.GreenLigths.Count;
-                        intersection.CurrentGreenLightChangeTime = currentTime + intersection.GreenLigths[intersection.CurrentGreenLigth].Duration;
-                    }
-                }
-
                 // Update cars
                 HashSet<int> usedIntersection = new HashSet<int>();
                 for (int i = 0; i < carSimultionPositions.Count; i++)
@@ -701,8 +685,10 @@ namespace hashcode2021
                     if (intersection.GreenLigths.Count == 0)
                         continue;
 
+                    GreenLightCycle currentGreenLight = intersection.GreenLightsArray[currentTime % intersection.GreenLightsArray.Length];
+
                     // Not green light, skip to next car
-                    if (!street.Name.Equals(intersection.GreenLigths[intersection.CurrentGreenLigth].Street.Name))
+                    if (!street.UniqueID.Equals(currentGreenLight.Street.UniqueID))
                     {
                         simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
                         continue;
@@ -765,13 +751,7 @@ namespace hashcode2021
 
             // Init green lights
             foreach (SolutionIntersection intersection in solution.Intersections)
-            {
-                intersection.CurrentGreenLigth = 0;
-                if (intersection.GreenLigths.Count > 0)
-                    intersection.CurrentGreenLightChangeTime = intersection.GreenLigths[0].Duration;
-                else
-                    intersection.CurrentGreenLightChangeTime = int.MaxValue;
-            }
+                intersection.BuildGreenLightsArray();
 
             while (currentTime <= this.Duration)
             {
@@ -780,13 +760,6 @@ namespace hashcode2021
                 {
                     if (intersection.GreenLigths.Count == 0)
                         continue;
-
-                    // Update intersection green light
-                    if (intersection.CurrentGreenLightChangeTime <= currentTime)
-                    {
-                        intersection.CurrentGreenLigth = (intersection.CurrentGreenLigth + 1) % intersection.GreenLigths.Count;
-                        intersection.CurrentGreenLightChangeTime = currentTime + intersection.GreenLigths[intersection.CurrentGreenLigth].Duration;
-                    }
 
                     // Update intersection car
                     List<CarSimultionPosition> carQueue = carQueueByIntersection[intersection.ID];
@@ -804,9 +777,10 @@ namespace hashcode2021
                             continue;
                         }
 
-                        SolutionIntersection solutionIntersection = solution.Intersections[street.EndIntersection];
+                        GreenLightCycle currentGreenLight = intersection.GreenLightsArray[currentTime % intersection.GreenLightsArray.Length];
+
                         // Not green light, skip to next car
-                        if (!street.Name.Equals(solutionIntersection.GetGreenLightStreet().Name))
+                        if (!street.UniqueID.Equals(currentGreenLight.Street.UniqueID))
                         {
                             simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
                             continue;
@@ -880,13 +854,7 @@ namespace hashcode2021
 
             // Init green lights
             foreach (SolutionIntersection intersection in solution.Intersections)
-            {
-                intersection.CurrentGreenLigth = 0;
-                if (intersection.GreenLigths.Count > 0)
-                    intersection.CurrentGreenLightChangeTime = intersection.GreenLigths[0].Duration;
-                else
-                    intersection.CurrentGreenLightChangeTime = int.MaxValue;
-            }
+                intersection.BuildGreenLightsArray();
 
             while (currentTime <= this.Duration)
             {
@@ -897,15 +865,10 @@ namespace hashcode2021
                     if (intersection.GreenLigths.Count == 0)
                         continue;
 
-                    // Update intersection green light
-                    if (intersection.CurrentGreenLightChangeTime <= currentTime)
-                    {
-                        intersection.CurrentGreenLigth = (intersection.CurrentGreenLigth + 1) % intersection.GreenLigths.Count;
-                        intersection.CurrentGreenLightChangeTime = currentTime + intersection.GreenLigths[intersection.CurrentGreenLigth].Duration;
-                    }
+                    GreenLightCycle currentGreenLight = intersection.GreenLightsArray[currentTime % intersection.GreenLightsArray.Length];
 
                     // Update intersection car
-                    List<CarSimultionPosition> carQueue = carQueueByStreet[intersection.GetGreenLightStreet().UniqueID];
+                    List<CarSimultionPosition> carQueue = carQueueByStreet[currentGreenLight.Street.UniqueID];
                     bool carPassed = false;
                     int waitOnGreenLight = 0;
                     for (int i = 0; i < carQueue.Count; i++)
@@ -922,8 +885,6 @@ namespace hashcode2021
                             simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
                             continue;
                         }
-
-                        SolutionIntersection solutionIntersection = solution.Intersections[street.EndIntersection];
 
                         // Mark intersection as used for this cycle
                         carPassed = true;

@@ -13,9 +13,24 @@ namespace hashcode2021
         public int CurrentGreenLigth;
         public int CurrentGreenLightChangeTime;
 
+        // Temporary used during simulation
+        public GreenLightCycle[] GreenLightsArray; 
+
         public SolutionIntersection(int id)
         {
             this.ID = id;
+        }
+
+        public void BuildGreenLightsArray()
+        {
+            int greenLightsCycleDuration = this.GreenLigths.Sum(o => o.Duration);
+            GreenLightsArray = new GreenLightCycle[greenLightsCycleDuration];
+            int nextPos = 0;
+            foreach (GreenLightCycle greenLightCycle in GreenLigths)
+            {
+                Array.Fill(GreenLightsArray, greenLightCycle, nextPos, greenLightCycle.Duration);
+                nextPos += greenLightCycle.Duration;
+            }            
         }
 
         public int CountGreenLights()
