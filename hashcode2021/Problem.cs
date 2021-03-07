@@ -730,6 +730,84 @@ namespace hashcode2021
             return simulationResult;
         }
 
+        public int RunSimulationLite(Solution solution)
+        {
+            CarSimultionPositionByTimeGotHere timeGotHereCompare = new CarSimultionPositionByTimeGotHere();
+            int score = 0;
+            int currentTime = 0;
+
+            // Create list of cars in simulation
+            List<CarSimultionPosition> carSimultionPositions = new List<CarSimultionPosition>();
+            int simulationCarStart = -(this.Cars.Count + 1);
+            foreach (Car car in this.Cars)
+            {
+                carSimultionPositions.Add(new CarSimultionPosition(car, simulationCarStart));
+                simulationCarStart++;
+            }
+
+            // Init green lights
+            foreach (SolutionIntersection intersection in solution.Intersections)
+                intersection.BuildGreenLightsArray();
+
+            while (currentTime <= this.Duration)
+            {
+                // Update cars
+                HashSet<int> usedIntersection = new HashSet<int>();
+                for (int i = 0; i < carSimultionPositions.Count; i++)
+                {
+                    CarSimultionPosition carSimultionPosition = carSimultionPositions[i];
+                    if (carSimultionPosition.TimeGotHere > currentTime)
+                        break;
+
+                    Street street = carSimultionPosition.Car.Streets[carSimultionPosition.StreetNumber];
+
+                    // Check if a car already used this intersection this cycle
+                    if (usedIntersection.Contains(street.EndIntersection))
+                        continue;
+
+                    SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
+                    if (intersection.GreenLightsArray.Length == 0)
+                        continue;
+
+                    GreenLightCycle currentGreenLight = intersection.GreenLightsArray[currentTime % intersection.GreenLightsArray.Length];
+
+                    // Not green light, skip to next car
+                    if (!street.UniqueID.Equals(currentGreenLight.Street.UniqueID))
+                        continue;
+
+                    // Mark intersection as used for this cycle
+                    usedIntersection.Add(street.EndIntersection);
+
+                    // Process car green light
+                    carSimultionPosition.StreetNumber++;
+                    Street newStreet = carSimultionPosition.GetCurrentStreet();
+                    carSimultionPosition.TimeGotHere = currentTime + newStreet.Length;
+                    carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
+
+                    carSimultionPositions.RemoveAt(i);
+                    i--;
+
+                    // Check if car finished
+                    if (carSimultionPosition.StreetNumber == carSimultionPosition.Car.Streets.Count - 1)
+                    {
+                        // Check if finished on time - if so give bonus
+                        if (carSimultionPosition.TimeGotHere <= this.Duration)
+                            score += this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
+                    }
+                    else
+                    {
+                        // Add the car in the right place
+                        Utils.AddSorted(carSimultionPositions, carSimultionPosition, timeGotHereCompare);
+                    }
+                }
+
+                currentTime++;
+            }
+
+            return score;
+        }
+
+
         /// <summary>
         /// Run simulation where there's a car queue for each intersection
         /// </summary>
