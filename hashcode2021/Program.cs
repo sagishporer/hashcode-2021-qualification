@@ -63,7 +63,8 @@ namespace hashcode2021
             // the green light cycle
             solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
-            //solution = OptimizeGreenLightOrderBruteForce(problem, solution);
+            // Hill-Climb - swap green light order & try to improve
+            //solution = OptimizeGreenLightOrderBruteForce(problem, solution, 10);
 
             // Simulate solution
             SimulationResult simulationResult = problem.RunSimulation(solution);
@@ -102,18 +103,27 @@ namespace hashcode2021
             }
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution)
+        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution, int maxPos)
         {
+            for (int p2 = 1; p2 <= maxPos; p2++)
+                for (int p1 = 0; p1 < p2; p1++)
+                    solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, p1, p2);
+
+            return solution;
+        }
+
+        private static Solution OptimizeGreenLightOrderBruteForceSwap(Problem problem, Solution solution, int pos1, int pos2)
+        { 
             SimulationResult simulationResult = problem.RunSimulation(solution);
             int bestScore = simulationResult.Score;
 
             for (int i = 0; i < solution.Intersections.Length; i++)
             {
-                if (solution.Intersections[i].GreenLigths.Count < 3)
+                if (solution.Intersections[i].GreenLigths.Count < pos2+1)
                     continue;
 
                 Solution newSolution = (Solution)solution.Clone();
-                Utils.SwapItems(newSolution.Intersections[i].GreenLigths, 0, 1);
+                Utils.SwapItems(newSolution.Intersections[i].GreenLigths, pos1, pos2);
                 simulationResult = problem.RunSimulation(newSolution);
                 if (simulationResult.Score > bestScore)
                 {
