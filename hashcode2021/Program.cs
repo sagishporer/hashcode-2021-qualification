@@ -64,7 +64,7 @@ namespace hashcode2021
             solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
             // Hill-Climb - swap green light order & try to improve
-            //solution = OptimizeGreenLightOrderBruteForce(problem, solution, true, 10);
+            //solution = OptimizeGreenLightOrderBruteForce(problem, solution, true, int.MaxValue, fileName);
 
             // Simulate solution
             SimulationResult simulationResult = problem.RunSimulation(solution);
@@ -107,28 +107,27 @@ namespace hashcode2021
         {
             int lastScore = problem.RunSimulation(solution).Score;
 
+            int maxGreenLigthCycle = solution.Intersections.Max(o => o.GreenLigths.Count);
+            maxPos = Math.Min(maxPos, maxGreenLigthCycle);
+
             while (true)
             {
-                for (int p2 = 1; p2 <= maxPos; p2++)
-                    for (int p1 = 0; p1 < p2; p1++)
-                        solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, p1, p2);
+                solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, maxPos, fileName);
 
-                for (int p = 0; p < maxPos; p++)
-                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, p, 1);
-
-                for (int p = 0; p < maxPos; p++)
-                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, p, -1);
+                for (int delta = 1; delta <= 3; delta++)
+                {
+                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, maxPos, delta, fileName);
+                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, maxPos, -delta, fileName);
+                }
 
                 if (waitToStable)
                 {
-                    int score = problem.RunSimulation(solution).Score;
+                    int score = problem.RunSimulationLite(solution);
                     if (lastScore == score)
                         break;
                     else
                     {
                         Console.WriteLine("Done full loop, starting again");
-                        if (fileName != null)
-                            GenerateOutput(solution, fileName);
                         lastScore = score;
                     }
                 }
@@ -139,52 +138,60 @@ namespace hashcode2021
             return solution;
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForceDeltaDuration(Problem problem, Solution solution, int pos, int delta)
+        private static Solution OptimizeGreenLightOrderBruteForceDeltaDuration(Problem problem, Solution solution, int maxPos, int delta, string fileName)
         {
-            SimulationResult simulationResult = problem.RunSimulation(solution);
-            int bestScore = simulationResult.Score;
+            int bestScore = problem.RunSimulationLite(solution);
 
             for (int i = 0; i < solution.Intersections.Length; i++)
             {
-                if (solution.Intersections[i].GreenLigths.Count <= pos)
-                    continue;
+                int loopPos = Math.Min(maxPos, solution.Intersections[i].GreenLigths.Count);
 
-                Solution newSolution = (Solution)solution.Clone();
-                newSolution.Intersections[i].GreenLigths[pos].Duration += delta;
-                if (newSolution.Intersections[i].GreenLigths[pos].Duration < 0)
-                    continue;
-
-                simulationResult = problem.RunSimulation(newSolution);
-                if (simulationResult.Score > bestScore)
+                for (int pos = 0; pos < loopPos; pos++)
                 {
-                    solution = newSolution;
-                    bestScore = simulationResult.Score;
-                    Console.WriteLine("New high score: {0}, Intersection: {1}", bestScore, i);
+                    Solution newSolution = (Solution)solution.Clone();
+                    newSolution.Intersections[i].GreenLigths[pos].Duration += delta;
+                    if (newSolution.Intersections[i].GreenLigths[pos].Duration < 0)
+                        continue;
+
+                    int newScore = problem.RunSimulationLite(newSolution);
+                    if (newScore > bestScore)
+                    {
+                        solution = newSolution;
+                        bestScore = newScore;
+                        Console.WriteLine("New high score: {0}, Intersection: {1}, Delte: {2}", bestScore, i, delta);
+                        if (fileName != null)
+                            GenerateOutput(solution, fileName);
+                    }
                 }
             }
 
             return solution;
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForceSwap(Problem problem, Solution solution, int pos1, int pos2)
+        private static Solution OptimizeGreenLightOrderBruteForceSwap(Problem problem, Solution solution, int maxPos, string fileName)
         { 
-            SimulationResult simulationResult = problem.RunSimulation(solution);
-            int bestScore = simulationResult.Score;
+            int bestScore = problem.RunSimulationLite(solution);
 
             for (int i = 0; i < solution.Intersections.Length; i++)
             {
-                if (solution.Intersections[i].GreenLigths.Count < pos2+1)
-                    continue;
+                int loopPos = Math.Min(maxPos, solution.Intersections[i].GreenLigths.Count);
 
-                Solution newSolution = (Solution)solution.Clone();
-                Utils.SwapItems(newSolution.Intersections[i].GreenLigths, pos1, pos2);
-                simulationResult = problem.RunSimulation(newSolution);
-                if (simulationResult.Score > bestScore)
-                {
-                    solution = newSolution;
-                    bestScore = simulationResult.Score;
-                    Console.WriteLine("New high score: {0}, Intersection: {1}", bestScore, i);
-                }
+                for (int pos2 = 1; pos2 < loopPos; pos2++)
+                    for (int pos1 = 0; pos1 < pos2; pos1++)
+                    {
+                        Solution newSolution = (Solution)solution.Clone();
+                        Utils.SwapItems(newSolution.Intersections[i].GreenLigths, pos1, pos2);
+
+                        int newScore = problem.RunSimulationLite(newSolution);
+                        if (newScore > bestScore)
+                        {
+                            solution = newSolution;
+                            bestScore = newScore;
+                            Console.WriteLine("New high score: {0}, Intersection: {1}", bestScore, i);
+                            if (fileName != null)
+                                GenerateOutput(solution, fileName);
+                        }
+                    }
             }
 
             return solution;
