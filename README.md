@@ -21,12 +21,12 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | A – An example | 2,002 | 2,002 | 2,002 |
 | B – By the ocean | 4,568,819 | 4,570,431 | 4,576,202 |
 | C – Checkmate | 1,306,213 | 1,315,077 | 1,328,389 |
-| D – Daily commute | 2,483,375 | 2,552,820 | 3,986,591 |
-| E – Etoile | 731,726 | 767,827 | 921,203 |
+| D – Daily commute | 2,483,375 | 2,565,531 | 3,986,591 |
+| E – Etoile | 731,726 | 768,012 | 921,203 |
 | F – Forever jammed | 1,460,486 |  1,472,822 | 1,765,068 |
-| Total | 10,552,621 | 10,680,979 | N/A |
+| Total | 10,552,621 | 10,693,875 | N/A |
 
 Notes:
 * Score - The score of this code, with the current commited parameters.
-* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,680,979 (team UVIGO Bruteforcers).
+* Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,693,875 (team UVIGO Bruteforcers).
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
