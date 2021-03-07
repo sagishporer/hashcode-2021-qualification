@@ -705,10 +705,10 @@ namespace hashcode2021
                     carSimultionPosition.TimeGotHere = currentTime + newStreet.Length;
                     carSimultionPosition.TimeLeftOnDrive -= newStreet.Length;
 
-                    // Check if car finished
                     carSimultionPositions.RemoveAt(i);
                     i--;
 
+                    // Check if car finished
                     if (carSimultionPosition.StreetNumber == carSimultionPosition.Car.Streets.Count - 1)
                     {
                         // Check if finished on time - if so give bonus
@@ -717,12 +717,10 @@ namespace hashcode2021
                     }
                     else
                     {
+                        // Add the car in the right place
                         Utils.AddSorted(carSimultionPositions, carSimultionPosition, timeGotHereCompare);
                     }
                 }
-
-                // Sort cars by time
-                //carSimultionPositions.Sort((x, y) => x.TimeGotHere.CompareTo(y.TimeGotHere));
 
                 currentTime++;
             }
