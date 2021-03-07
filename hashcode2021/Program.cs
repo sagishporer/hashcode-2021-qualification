@@ -113,6 +113,12 @@ namespace hashcode2021
                     for (int p1 = 0; p1 < p2; p1++)
                         solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, p1, p2);
 
+                for (int p = 0; p < maxPos; p++)
+                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, p, 1);
+
+                for (int p = 0; p < maxPos; p++)
+                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, p, -1);
+
                 if (waitToStable)
                 {
                     int score = problem.RunSimulation(solution).Score;
@@ -123,6 +129,33 @@ namespace hashcode2021
                 }
                 else
                     break;
+            }
+
+            return solution;
+        }
+
+        private static Solution OptimizeGreenLightOrderBruteForceDeltaDuration(Problem problem, Solution solution, int pos, int delta)
+        {
+            SimulationResult simulationResult = problem.RunSimulation(solution);
+            int bestScore = simulationResult.Score;
+
+            for (int i = 0; i < solution.Intersections.Length; i++)
+            {
+                if (solution.Intersections[i].GreenLigths.Count <= pos)
+                    continue;
+
+                Solution newSolution = (Solution)solution.Clone();
+                newSolution.Intersections[i].GreenLigths[pos].Duration += delta;
+                if (newSolution.Intersections[i].GreenLigths[pos].Duration < 0)
+                    continue;
+
+                simulationResult = problem.RunSimulation(newSolution);
+                if (simulationResult.Score > bestScore)
+                {
+                    solution = newSolution;
+                    bestScore = simulationResult.Score;
+                    Console.WriteLine("New high score: {0}, Intersection: {1}", bestScore, i);
+                }
             }
 
             return solution;
