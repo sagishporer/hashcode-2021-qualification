@@ -64,7 +64,7 @@ namespace hashcode2021
             solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
             // Hill-Climb - swap green light order & try to improve
-            //solution = OptimizeGreenLightOrderBruteForce(problem, solution, 10);
+            //solution = OptimizeGreenLightOrderBruteForce(problem, solution, true, 10);
 
             // Simulate solution
             SimulationResult simulationResult = problem.RunSimulation(solution);
@@ -103,11 +103,27 @@ namespace hashcode2021
             }
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution, int maxPos)
+        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution, bool waitToStable, int maxPos)
         {
-            for (int p2 = 1; p2 <= maxPos; p2++)
-                for (int p1 = 0; p1 < p2; p1++)
-                    solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, p1, p2);
+            int lastScore = problem.RunSimulation(solution).Score;
+
+            while (true)
+            {
+                for (int p2 = 1; p2 <= maxPos; p2++)
+                    for (int p1 = 0; p1 < p2; p1++)
+                        solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, p1, p2);
+
+                if (waitToStable)
+                {
+                    int score = problem.RunSimulation(solution).Score;
+                    if (lastScore == score)
+                        break;
+                    else
+                        lastScore = score;
+                }
+                else
+                    break;
+            }
 
             return solution;
         }
