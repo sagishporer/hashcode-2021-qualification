@@ -103,7 +103,7 @@ namespace hashcode2021
             }
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution, bool waitToStable, int maxPos)
+        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution, bool waitToStable, int maxPos, String fileName)
         {
             int lastScore = problem.RunSimulation(solution).Score;
 
@@ -125,7 +125,12 @@ namespace hashcode2021
                     if (lastScore == score)
                         break;
                     else
+                    {
+                        Console.WriteLine("Done full loop, starting again");
+                        if (fileName != null)
+                            GenerateOutput(solution, fileName);
                         lastScore = score;
+                    }
                 }
                 else
                     break;
