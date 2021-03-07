@@ -684,7 +684,7 @@ namespace hashcode2021
                     }
 
                     SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
-                    if (intersection.GreenLigths.Count == 0)
+                    if (intersection.GreenLightsArray.Length == 0)
                         continue;
 
                     GreenLightCycle currentGreenLight = intersection.GreenLightsArray[currentTime % intersection.GreenLightsArray.Length];
