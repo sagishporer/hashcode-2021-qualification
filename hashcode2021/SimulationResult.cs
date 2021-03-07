@@ -8,15 +8,15 @@ namespace hashcode2021
     class SimulationResult
     {
         public int Score;
-        public List<IntersectionResult> IntersectionResults;
+        public IntersectionResult[] IntersectionResults;
         public List<CarSimultionPosition> CarsNotFinished;
 
         public SimulationResult(int numberOfIntersections)
         {
             this.Score = 0;
-            this.IntersectionResults = new List<IntersectionResult>();
+            this.IntersectionResults = new IntersectionResult[numberOfIntersections];
             for (int i = 0; i < numberOfIntersections; i++)
-                this.IntersectionResults.Add(new IntersectionResult(i));
+                this.IntersectionResults[i] = new IntersectionResult(i);
 
             this.CarsNotFinished = new List<CarSimultionPosition>();
         }
