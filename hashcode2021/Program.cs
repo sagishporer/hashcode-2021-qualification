@@ -63,8 +63,8 @@ namespace hashcode2021
             // the green light cycle
             solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
-            // Hill-Climb - swap green light order & try to improve
-            //solution = OptimizeGreenLightOrderBruteForce(problem, solution, true, int.MaxValue, fileName);
+            // Hill-Climbing
+            //solution = OptimizeBruteForce(problem, solution, int.MaxValue);
 
             // Simulate solution
             SimulationResult simulationResult = problem.RunSimulation(solution);
@@ -103,7 +103,7 @@ namespace hashcode2021
             }
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForce(Problem problem, Solution solution, bool waitToStable, int maxPos, String fileName)
+        private static Solution OptimizeBruteForce(Problem problem, Solution solution, int maxPos)
         {
             int lastScore = problem.RunSimulation(solution).Score;
 
@@ -112,33 +112,28 @@ namespace hashcode2021
 
             while (true)
             {
-                solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, maxPos, fileName);
+                solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, maxPos);
 
                 for (int delta = 1; delta <= 3; delta++)
                 {
-                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, maxPos, delta, fileName);
-                    solution = OptimizeGreenLightOrderBruteForceDeltaDuration(problem, solution, maxPos, -delta, fileName);
+                    solution = OptimizeGreenLightBruteForceDeltaDuration(problem, solution, maxPos, delta);
+                    solution = OptimizeGreenLightBruteForceDeltaDuration(problem, solution, maxPos, -delta);
                 }
 
-                if (waitToStable)
-                {
-                    int score = problem.RunSimulationLite(solution);
-                    if (lastScore == score)
-                        break;
-                    else
-                    {
-                        Console.WriteLine("Done full loop, starting again");
-                        lastScore = score;
-                    }
-                }
-                else
+                int score = problem.RunSimulationLite(solution);
+                if (lastScore == score)
                     break;
+                else
+                {
+                    Console.WriteLine("Done full loop, starting again");
+                    lastScore = score;
+                }
             }
 
             return solution;
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForceDeltaDuration(Problem problem, Solution solution, int maxPos, int delta, string fileName)
+        private static Solution OptimizeGreenLightBruteForceDeltaDuration(Problem problem, Solution solution, int maxPos, int delta)
         {
             int bestScore = problem.RunSimulationLite(solution);
 
@@ -158,9 +153,6 @@ namespace hashcode2021
                     {
                         solution = newSolution;
                         bestScore = newScore;
-                        Console.WriteLine("New high score: {0}, Intersection: {1}, Delta: {2}", bestScore, i, delta);
-                        if (fileName != null)
-                            GenerateOutput(solution, fileName);
                     }
                 }
             }
@@ -168,7 +160,7 @@ namespace hashcode2021
             return solution;
         }
 
-        private static Solution OptimizeGreenLightOrderBruteForceSwap(Problem problem, Solution solution, int maxPos, string fileName)
+        private static Solution OptimizeGreenLightOrderBruteForceSwap(Problem problem, Solution solution, int maxPos)
         { 
             int bestScore = problem.RunSimulationLite(solution);
 
@@ -187,9 +179,6 @@ namespace hashcode2021
                         {
                             solution = newSolution;
                             bestScore = newScore;
-                            Console.WriteLine("New high score: {0}, Intersection: {1}", bestScore, i);
-                            if (fileName != null)
-                                GenerateOutput(solution, fileName);
                         }
                     }
             }
