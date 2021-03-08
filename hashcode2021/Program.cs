@@ -67,8 +67,8 @@ namespace hashcode2021
             //solution = OptimizeBruteForce(problem, solution, int.MaxValue);
 
             // Simulate solution
-            SimulationResult simulationResult = problem.RunSimulation(solution);
-            Console.WriteLine("Score: {0}", simulationResult.Score);
+            int score = problem.RunSimulationLite(solution);
+            Console.WriteLine("Score: {0}", score);
 
             // Generate output
             GenerateOutput(solution, fileName);
@@ -94,18 +94,18 @@ namespace hashcode2021
                 solution = OptimizeCycleClearStreetsCarsDidntFinish(problem, solution);
 
                 // Simulate solution
-                SimulationResult simulationResult = problem.RunSimulation(solution);
-                if (simulationResult.Score > bestScore)
+                int simulationResultScore = problem.RunSimulationLite(solution);
+                if (simulationResultScore > bestScore)
                 {
-                    Console.WriteLine("Found. Score: {0}, Parameter: {1}", simulationResult.Score, parameter);
-                    bestScore = simulationResult.Score;
+                    Console.WriteLine("Found. Score: {0}, Parameter: {1}", simulationResultScore, parameter);
+                    bestScore = simulationResultScore;
                 }
             }
         }
 
         private static Solution OptimizeBruteForce(Problem problem, Solution solution, int maxPos)
         {
-            int lastScore = problem.RunSimulation(solution).Score;
+            int lastScore = problem.RunSimulationLite(solution);
 
             int maxGreenLigthCycle = solution.Intersections.Max(o => o.GreenLigths.Count);
             maxPos = Math.Min(maxPos, maxGreenLigthCycle);
@@ -201,11 +201,11 @@ namespace hashcode2021
 
             Solution newSolution = (Solution)solution.Clone();
             RemoveCycleStreetsUsedOnlyByCars(problem, newSolution, result.CarsNotFinished);
-            SimulationResult newResult = problem.RunSimulation(newSolution);
-            if (newResult.Score > bestSolutionScore)
+            int newResultScore = problem.RunSimulationLite(newSolution);
+            if (newResultScore > bestSolutionScore)
             {
                 bestSolution = newSolution;
-                bestSolutionScore = newResult.Score;
+                bestSolutionScore = newResultScore;
             }
 
             List<CarSimultionPosition> carsNotFinished = result.CarsNotFinished.OrderBy(o => o.TimeLeftOnDrive).ToList();
@@ -220,13 +220,13 @@ namespace hashcode2021
 
                     newSolution = (Solution)solution.Clone();
                     RemoveCycleStreetsUsedOnlyByCars(problem, newSolution, carsNotFinished);
-                    newResult = problem.RunSimulation(newSolution);
+                    newResultScore = problem.RunSimulationLite(newSolution);
                     carsNotFinished.Insert(i, iCar);
 
-                    if (newResult.Score > bestSolutionScore)
+                    if (newResultScore > bestSolutionScore)
                     {
                         bestSolution = newSolution;
-                        bestSolutionScore = newResult.Score;
+                        bestSolutionScore = newResultScore;
                         bestSolutionExcludeCar = i;
                         break;
                     }
@@ -277,9 +277,8 @@ namespace hashcode2021
 
         private static Solution OptimizeCycleDurationByNumberOfIncomingCars(Problem problem, Solution solution)
         {
-            SimulationResult result = problem.RunSimulation(solution);
             Solution bestSolution = solution;
-            int bestScore = result.Score;
+            int bestScore = problem.RunSimulationLite(solution);
 
             for (int d = 1; d < 50; d++)
             {
@@ -291,11 +290,11 @@ namespace hashcode2021
                         cycle.Duration = Math.Max(1, cycle.Street.IncomingUsageCount / d);
                 }
 
-                result = problem.RunSimulation(newSolution);
-                if (result.Score > bestScore)
+                int resultScore = problem.RunSimulationLite(newSolution);
+                if (resultScore > bestScore)
                 {
                     bestSolution = newSolution;
-                    bestScore = result.Score;
+                    bestScore = resultScore;
                 }
             }
 
