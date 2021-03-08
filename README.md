@@ -27,6 +27,6 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | Total | 10,552,621 | 10,693,875 | N/A |
 
 Notes:
-* Score - The score of this code, with the current commited parameters.
+* Score - The score of the "main" branch code, with the current commited parameters.
 * Max Known Score - The highest score by input published by anyone. Highest score on the extended round was 10,693,875 (team UVIGO Bruteforcers).
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
