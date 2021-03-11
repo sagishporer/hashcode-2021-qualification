@@ -35,5 +35,5 @@ Notes:
 * Score - The score of the "main" branch code, with the current commited parameters.
 * Optimize Params - The score in the input specific branches with the parameters found to works best for the specific input.
 * Hill Climb - The score after optimized parameters and hill climb. The hill climb did not finish on D. Ended at the end of the extended round.
-* Max Known Score - The highest score by input published by anyone (team UVIGO Bruteforcers).
+* Max Known Score - The highest score by input published by anyone ([team UVIGO Bruteforcers](https://codeforces.com/blog/entry/88188?#comment-768121)).
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
