@@ -41,7 +41,7 @@ namespace hashcode2021
             // Remove streets that not car is using for the possible green lights
             int removedStreets = problem.RemoveUnusedStreets();
             Console.WriteLine("Removed streets: {0}", removedStreets);
-            
+
             Solution solution = new Solution(problem.Intersections.Count);
 
             // Generate a dummy solution - each incoming street will get a green light for 1 cycle
@@ -50,7 +50,7 @@ namespace hashcode2021
             // Run simulation and try to change the order of green lights to minimize blocking
             // D - use OptimizeGreenLightOrder4
             problem.OptimizeGreenLightOrder(solution, new HashSet<int>());
-
+            
             // E - This works better
             //solution = OptimizeCycleDurationByNumberOfIncomingCars(problem, solution);
 
@@ -112,14 +112,21 @@ namespace hashcode2021
 
             while (true)
             {
+                // For D - comment everything but this. Too slow.
                 solution = OptimizeGreenLightOrderBruteForceSwap(problem, solution, maxPos);
 
+                // Minimal improvement, very slow. Comment if time is limited.
+                solution = OptimizeGreenLightOrderBruteForceMove(problem, solution, maxPos);
+
+                // Tested only with 3 & 10. 
+                // For E & F - 3 performed better
+                // For B & C - 10
                 for (int delta = 1; delta <= 3; delta++)
                 {
                     solution = OptimizeGreenLightBruteForceDeltaDuration(problem, solution, maxPos, delta);
                     solution = OptimizeGreenLightBruteForceDeltaDuration(problem, solution, maxPos, -delta);
                 }
-
+                
                 int score = problem.RunSimulationLite(solution);
                 if (lastScore == score)
                     break;
@@ -149,10 +156,12 @@ namespace hashcode2021
                         continue;
 
                     int newScore = problem.RunSimulationLite(newSolution);
-                    if (newScore > bestScore)
+                    if ((newScore > bestScore)||
+                        ((newScore == bestScore)&&(delta < 0)))
                     {
                         solution = newSolution;
                         bestScore = newScore;
+                        Console.WriteLine("New best: {0} [Delta]", bestScore);
                     }
                 }
             }
@@ -179,6 +188,46 @@ namespace hashcode2021
                         {
                             solution = newSolution;
                             bestScore = newScore;
+                            Console.WriteLine("New best: {0} [Swap]", bestScore);
+                        }
+                    }
+            }
+
+            return solution;
+        }
+
+        private static Solution OptimizeGreenLightOrderBruteForceMove(Problem problem, Solution solution, int maxPos)
+        {
+            int bestScore = problem.RunSimulationLite(solution);
+
+            for (int i = 0; i < solution.Intersections.Length; i++)
+            {
+                int loopPos = Math.Min(maxPos, solution.Intersections[i].GreenLigths.Count);
+
+                for (int pos2 = 0; pos2 < loopPos; pos2++)
+                    for (int pos1 = 0; pos1 < loopPos; pos1++)
+                    {
+                        if (pos1 == pos2)
+                            continue;
+
+                        // Skip - this is check by swap
+                        if ((pos1 + 1 == pos2) || (pos1 - 1 == pos2))
+                            continue;
+
+                        Solution newSolution = (Solution)solution.Clone();
+                        SolutionIntersection intersection = newSolution.Intersections[i];
+
+                        // Move item
+                        GreenLightCycle greenLightCycle = intersection.GreenLigths[pos1];
+                        intersection.GreenLigths.RemoveAt(pos1);
+                        intersection.GreenLigths.Insert(pos2, greenLightCycle);
+
+                        int newScore = problem.RunSimulationLite(newSolution);
+                        if (newScore > bestScore)
+                        {
+                            solution = newSolution;
+                            bestScore = newScore;
+                            Console.WriteLine("New best: {0} [Move]", bestScore);
                         }
                     }
             }
