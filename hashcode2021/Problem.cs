@@ -749,10 +749,13 @@ namespace hashcode2021
             foreach (SolutionIntersection intersection in solution.Intersections)
                 intersection.BuildGreenLightsArray();
 
+            HashSet<int> usedIntersection = new HashSet<int>();
+
             while (currentTime <= this.Duration)
             {
+                usedIntersection.Clear();
+
                 // Update cars
-                HashSet<int> usedIntersection = new HashSet<int>();
                 for (int i = 0; i < carSimultionPositions.Count; i++)
                 {
                     CarSimultionPosition carSimultionPosition = carSimultionPositions[i];
