@@ -662,12 +662,14 @@ namespace hashcode2021
 
             // Init green lights
             foreach (SolutionIntersection intersection in solution.Intersections)
+            {
                 intersection.BuildGreenLightsArray();
+                intersection.LastCyclePassed = -1;
+            }
 
             while (currentTime <= this.Duration)
             {
                 // Update cars
-                HashSet<int> usedIntersection = new HashSet<int>();
                 for (int i = 0; i < carSimultionPositions.Count; i++)
                 {
                     CarSimultionPosition carSimultionPosition = carSimultionPositions[i];
@@ -677,13 +679,13 @@ namespace hashcode2021
                     Street street = carSimultionPosition.Car.Streets[carSimultionPosition.StreetNumber];
 
                     // Check if a car already used this intersection this cycle
-                    if (usedIntersection.Contains(street.EndIntersection))
+                    SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
+                    if (intersection.LastCyclePassed >= currentTime)
                     {
                         simulationResult.IntersectionResults[street.EndIntersection].AddBlockedTraffic(street.Name);
                         continue;
                     }
 
-                    SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
                     if (intersection.GreenLightsArray.Length == 0)
                         continue;
 
@@ -697,7 +699,7 @@ namespace hashcode2021
                     }
 
                     // Mark intersection as used for this cycle
-                    usedIntersection.Add(street.EndIntersection);
+                    intersection.LastCyclePassed = currentTime;
 
                     // Process car green light
                     carSimultionPosition.StreetNumber++;
@@ -747,14 +749,13 @@ namespace hashcode2021
 
             // Init green lights
             foreach (SolutionIntersection intersection in solution.Intersections)
+            {
                 intersection.BuildGreenLightsArray();
-
-            HashSet<int> usedIntersection = new HashSet<int>();
+                intersection.LastCyclePassed = -1;
+            }
 
             while (currentTime <= this.Duration)
             {
-                usedIntersection.Clear();
-
                 // Update cars
                 for (int i = 0; i < carSimultionPositions.Count; i++)
                 {
@@ -765,10 +766,10 @@ namespace hashcode2021
                     Street street = carSimultionPosition.Car.Streets[carSimultionPosition.StreetNumber];
 
                     // Check if a car already used this intersection this cycle
-                    if (usedIntersection.Contains(street.EndIntersection))
+                    SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
+                    if (intersection.LastCyclePassed >= currentTime)
                         continue;
 
-                    SolutionIntersection intersection = solution.Intersections[street.EndIntersection];
                     if (intersection.GreenLightsArray.Length == 0)
                         continue;
 
@@ -779,7 +780,7 @@ namespace hashcode2021
                         continue;
 
                     // Mark intersection as used for this cycle
-                    usedIntersection.Add(street.EndIntersection);
+                    intersection.LastCyclePassed = currentTime;
 
                     // Process car green light
                     carSimultionPosition.StreetNumber++;

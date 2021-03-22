@@ -14,7 +14,8 @@ namespace hashcode2021
         public int CurrentGreenLightChangeTime;
 
         // Temporary used during simulation
-        public GreenLightCycle[] GreenLightsArray; 
+        public GreenLightCycle[] GreenLightsArray;
+        public int LastCyclePassed;
 
         public SolutionIntersection(int id)
         {
