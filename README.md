@@ -25,9 +25,9 @@ Some improvement is possible by small tweaks to the parameters of step (5). For 
 | --- | --- | --- | --- | --- | --- |
 | A – An example | 2,002 | 2,002 | 2,002 | <=== | 2,002 |
 | B – By the ocean | 4,568,819 | 4,568,869 | 4,570,281 | 4,570,431 | 4,576,202 |
-| C – Checkmate | 1,306,213 | 1,306,574 | 1,314,913 | 1,315,077 | 1,328,389 |
+| C – Checkmate | 1,306,213 | 1,306,574 | 1,314,913 | 1,315,372 | 1,328,389 |
 | D – Daily commute | 2,483,375 | 2,493,412 | 2,610,027 | <=== | 3,986,591 |
-| E – Etoile | 731,726 | 733,936 | 762,253 | 768,012 | 921,203 |
+| E – Etoile | 731,726 | 733,936 | 762,253 | 779,279 | 921,203 |
 | F – Forever jammed | 1,460,486 | 1,471,203 | 1,480,489 | <=== | 1,765,068 |
 | Total | 10,552,621 | 10,575,996 | 10,739,965 | N/A | N/A |
 
@@ -35,5 +35,5 @@ Notes:
 * Score - The score of the "main" branch code, with the current commited parameters.
 * Optimize Params - The score in the input specific branches with the parameters found to works best for the specific input.
 * Hill Climb - The score after optimized parameters and hill climb. The hill climb did not finish on D. Ended at the end of the extended round.
-* Max Known Score - The highest score by input published by anyone (team UVIGO Bruteforcers).
+* Max Known Score - The highest score by input published by anyone ([Source - codeforces.com](https://codeforces.com/blog/entry/88188?#comment-768121)).
 * Upper Bound - Hypothetical upper bound for the score. Calculated by: Sum for all cars[Duration - Car path length + Car bonus]. 
