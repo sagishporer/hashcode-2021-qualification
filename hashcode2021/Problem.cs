@@ -23,7 +23,7 @@ namespace hashcode2021
             // Build intersections
             Intersections = new List<Intersection>();
             for (int i = 0; i < numberOfIntersections; i++)
-                Intersections.Add(new Intersection(i, new List<Street>(), new List<Street>()));
+                Intersections.Add(new Intersection(i, new List<Street>(), new List<Street>(), new List<Car>()));
 
             foreach (Street street in streets.Values)
             {
@@ -34,7 +34,10 @@ namespace hashcode2021
             // Count number of times a street is used as incoming street
             foreach (Car car in this.Cars)
                 for (int i = 0; i < car.Streets.Count - 1; i++)
+                {
                     car.Streets[i].IncomingUsageCount++;
+                    Intersections[car.Streets[i].EndIntersection].PassingCars.Add(car);
+                }
 
             // Update the number of cars on the street at the start
             foreach (Street street in this.Streets.Values)
