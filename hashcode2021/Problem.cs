@@ -718,11 +718,7 @@ namespace hashcode2021
                     {
                         // Check if finished on time - if so give bonus
                         if (carSimultionPosition.TimeGotHere <= this.Duration)
-                        {
-                            int carScore = this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
-                            simulationResult.Score += carScore;
-                            simulationResult.ScorePerCar.Add(carSimultionPosition.Car.UniqueID, carScore);
-                        }
+                            simulationResult.Score += this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
                     }
                     else
                     {
@@ -895,12 +891,7 @@ namespace hashcode2021
                         {
                             // Check if finished on time - if so give bonus
                             if (carSimultionPosition.TimeGotHere <= this.Duration)
-                            {
-                                int carScore = this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
-                                simulationResult.Score += carScore;
-                                simulationResult.ScorePerCar.Add(carSimultionPosition.Car.UniqueID, carScore);
-
-                            }
+                                simulationResult.Score += this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
                         } 
                         else
                         {
@@ -1000,11 +991,7 @@ namespace hashcode2021
                         {
                             // Check if finished on time - if so give bonus
                             if (carSimultionPosition.TimeGotHere <= this.Duration)
-                            {
-                                int carScore = this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
-                                simulationResult.Score += carScore;
-                                simulationResult.ScorePerCar.Add(carSimultionPosition.Car.UniqueID, carScore);
-                            }
+                                simulationResult.Score += this.BonusPerCar + (this.Duration - carSimultionPosition.TimeGotHere);
                         }
                         else
                         {

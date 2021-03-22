@@ -10,7 +10,6 @@ namespace hashcode2021
         public int Score;
         public IntersectionResult[] IntersectionResults;
         public List<CarSimultionPosition> CarsNotFinished;
-        public Dictionary<int, int> ScorePerCar;
 
         public SimulationResult(int numberOfIntersections)
         {
@@ -20,7 +19,6 @@ namespace hashcode2021
                 this.IntersectionResults[i] = new IntersectionResult(i);
 
             this.CarsNotFinished = new List<CarSimultionPosition>();
-            this.ScorePerCar = new Dictionary<int, int>();
         }
 
         public int GetMaxBlockedTraffic()
